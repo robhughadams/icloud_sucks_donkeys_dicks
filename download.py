@@ -1,4 +1,4 @@
-import json, urllib
+import json, urllib, os.path
 
 stream_id = 'ADG6XBubGx0KND'
 base_url = 'https://p13-sharedstreams.icloud.com/' + stream_id + '/sharedstreams/'
@@ -29,9 +29,13 @@ for batch in batches:
 	locations = data['locations']
 	items = data['items']
 	for key, item in items.iteritems():
-		location = item['url_location']
-		host = locations[location]['hosts'][0]
-		url = 'https://' + host + item['url_path']
-		print 'downloading photo from ' + url
-		urllib.urlretrieve(url, key + '.jpeg')
+		file_name = key + '.jpeg'
+		if os.path.exists(file_name):
+			print 'file ' + file_name + ' exists - skipping'
+		else:
+			location = item['url_location']
+			host = locations[location]['hosts'][0]
+			url = 'https://' + host + item['url_path']
+			print 'downloading photo from ' + url
+			urllib.urlretrieve(url, file_name)
 
